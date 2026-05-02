@@ -32,7 +32,7 @@ Copy the skill definition to your Claude Code skills directory:
 
 ```bash
 mkdir -p ~/.claude/skills/ddgr-skill
-cp path/to/ddgr_skill/.claude/skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
+cp skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
 ```
 
 Restart Claude Code. The skill is now available via `/ddgr-skill` or automatically triggered when you ask about web search.
@@ -43,13 +43,13 @@ Copy the skill definition to your Hermes-Agent skills directory:
 
 ```bash
 mkdir -p ~/.hermes/skills/web/ddgr-skill
-cp path/to/ddgr_skill/.claude/skills/ddgr-skill/SKILL.md ~/.hermes/skills/web/ddgr-skill/
+cp skills/ddgr-skill/SKILL.md ~/.hermes/skills/web/ddgr-skill/
 ```
 
 Or install from a URL:
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/nsh1999/ddgr_skill/main/.claude/skills/ddgr-skill/SKILL.md
+hermes skills install https://raw.githubusercontent.com/nsh1999/ddgr_skill/main/skills/ddgr-skill/SKILL.md
 ```
 
 Verify the skill is installed:
