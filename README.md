@@ -15,14 +15,6 @@ Users are responsible for ensuring their usage complies with DuckDuckGo's terms 
 
 ## Installation
 
-### Prerequisites
-
-The [ddgr](https://github.com/jremix/ddgr) CLI must be installed separately.
-On macOS, install it via Homebrew:
-
-```bash
-brew install ddgr
-```
 
 ### Installing ddgr-skill
 
