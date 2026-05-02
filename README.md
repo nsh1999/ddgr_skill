@@ -26,15 +26,9 @@ brew install ddgr
 Install the Python CLI:
 
 ```bash
-git clone https://github.com/niels-stig-hansen/ddgr_skill.git
+git clone https://github.com/nsh1999/ddgr_skill.git
 cd ddgr_skill
 uv sync
-```
-
-Alternatively, install globally with pip:
-
-```bash
-pip install ddgr-skill
 ```
 
 ### Installing as a Claude Code Skill
@@ -60,7 +54,7 @@ cp path/to/ddgr_skill/.claude/skills/ddgr-skill/SKILL.md ~/.hermes/skills/web/dd
 Or install from a URL:
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/niels-stig-hansen/ddgr_skill/main/.claude/skills/ddgr-skill/SKILL.md
+hermes skills install https://raw.githubusercontent.com/nsh1999/ddgr_skill/main/.claude/skills/ddgr-skill/SKILL.md
 ```
 
 Verify the skill is installed:
