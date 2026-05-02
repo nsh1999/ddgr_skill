@@ -17,13 +17,16 @@ Users are responsible for ensuring their usage complies with DuckDuckGo's terms 
 
 ### Prerequisites
 
-Install [ddgr](https://github.com/jremix/ddgr) via Homebrew:
+The [ddgr](https://github.com/jremix/ddgr) CLI must be installed separately.
+On macOS, install it via Homebrew:
 
 ```bash
 brew install ddgr
 ```
 
-Install the Python CLI:
+### Installing ddgr-skill
+
+ddgr-skill is available only via GitHub. Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/nsh1999/ddgr_skill.git
