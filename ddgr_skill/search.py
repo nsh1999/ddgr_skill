@@ -1,12 +1,15 @@
 """DuckDuckGo search via the ddgr CLI subprocess."""
 
 import json
+import logging
 import subprocess
 from pathlib import Path
 from shutil import which
 from typing import Optional
 
 from ddgr_skill.exceptions import DdgrNotFoundError, DdgrSearchError
+
+logger = logging.getLogger(__name__)
 
 _DDGR_FLAGS = {"d", "w", "m", "y"}
 _DDGR_TIMEOUT = 30
@@ -107,6 +110,8 @@ def search(
         expand_urls,
     )
 
+    logger.debug(f"Executing ddgr command: {' '.join(cmd)}")
+
     result = subprocess.run(
         cmd,
         capture_output=True,
@@ -121,6 +126,7 @@ def search(
 
     try:
         parsed = json.loads(result.stdout)
+        logger.info(f"Successfully retrieved {len(parsed)} results from ddgr")
     except json.JSONDecodeError as exc:
         raise DdgrSearchError(
             f"ddgr returned invalid JSON: {exc}"

@@ -13,52 +13,76 @@ The authors are not responsible for any misuse of this software, including but n
 
 Users are responsible for ensuring their usage complies with DuckDuckGo's terms of service and all applicable laws and regulations.
 
+## Prerequisites
+
+- **Python 3.12+**
+- **[uv](https://astral.sh/uv)** - Python package manager
+- **[ddgr](https://github.com/jremix/ddgr)** - Install via `brew install ddgr`
+
 ## Installation
 
+### Quick Install (Claude Code)
 
-### Installing ddgr-skill
+```bash
+git clone https://github.com/nsh1999/ddgr_skill.git
+cd ddgr_skill
+bash install/install_ddgr_skill.sh
+```
 
-ddgr-skill is available only via GitHub. Clone the repository and install dependencies:
+This installs dependencies, sets up the CLI, and copies the skill definition to `~/.claude/skills/ddgr-skill/`. Restart Claude Code to activate.
+
+### Manual Install
 
 ```bash
 git clone https://github.com/nsh1999/ddgr_skill.git
 cd ddgr_skill
 uv sync
-```
-
-### Installing as a Claude Code Skill
-
-Copy the skill definition to your Claude Code skills directory:
-
-```bash
 mkdir -p ~/.claude/skills/ddgr-skill
 cp skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
 ```
 
-Restart Claude Code. The skill is now available via `/ddgr-skill` or automatically triggered when you ask about web search.
+## Usage
 
-### Installing as a Hermes-Agent Skill
+### Lookup (default - search + fetch)
 
-Copy the skill definition to your Hermes-Agent skills directory:
-
-```bash
-mkdir -p ~/.hermes/skills/web/ddgr-skill
-cp skills/ddgr-skill/SKILL.md ~/.hermes/skills/web/ddgr-skill/
-```
-
-Or install from a URL:
+The `lookup` command searches DuckDuckGo and fetches full page content as markdown:
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/nsh1999/ddgr_skill/main/skills/ddgr-skill/SKILL.md
+uv run ddgr-skill lookup "what is the weather in Zurich today?"
 ```
 
-Verify the skill is installed:
+### Search with Fetch
+
+Use `search --fetch` to search and fetch results in one step:
 
 ```bash
-hermes skills list
+uv run ddgr-skill search "Python async programming" --num 5 --fetch --format markdown
 ```
 
-The skill is now available via `/ddgr-skill` or `hermes chat --toolsets skills -q "use ddgr-skill to..."`.
+### Verbose Logging
+
+Enable detailed logging (including exact `ddgr` commands and HTTP requests) by adding the `-v` or `--verbose` flag:
+
+```bash
+uv run ddgr-skill -v lookup "what is the weather in Zurich today?"
+```
+
+### Other Commands
+
+| Command | Example |
+|---------|---------|
+| Search (titles only) | `uv run ddgr-skill search "python" --num 5` |
+| Fetch single URL | `uv run ddgr-skill fetch "https://example.com"` |
+| Lookup (search + fetch) | `uv run ddgr-skill lookup "topic" --num 3` |
+| Save to directory | `uv run ddgr-skill lookup "topic" --output ./research` |
+
+## Development
+
+```bash
+uv run pytest -v                      # All tests
+uv run pytest -v -m "not integration" # Unit tests only
+uv run pytest --cov=ddgr_skill       # With coverage
+```
 
 ## License
 

@@ -12,6 +12,9 @@ dependencies = [
 [project.scripts]
 ddgr-skill = "ddgr_skill.cli:main"
 
+[tool.setuptools.packages.find]
+include = ["ddgr_skill*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_classes = "Test*"

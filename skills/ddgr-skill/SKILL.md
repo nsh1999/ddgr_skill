@@ -6,19 +6,53 @@ origin: nsh1999
 
 # Web Search and Content Retrieval
 
-Use `ddgr-skill` to search DuckDuckGo and retrieve web page content.
+Use `ddgr-skill` to search DuckDuckGo and retrieve full web page content. The tool
+searches the web and fetches result pages as readable markdown via `fetcher.py`.
 
 Requires [ddgr](https://github.com/jremix/ddgr) installed via Homebrew: `brew install ddgr`.
 
+## Default Behavior
+
+**Always use `lookup`** when the user asks a factual question or wants to research a
+topic. `lookup` searches DuckDuckGo and fetches the top results as markdown in one
+step. This is the preferred mode for Claude Code integration.
+
+```bash
+ddgr-skill lookup "what is the weather in Zurich today?"
+```
+
+The output is markdown with page titles, source URLs, and full page content.
+Failed fetches include an error message but successful results are still returned.
+
 ## Commands
+
+### Lookup (default)
+
+Search and fetch the top results in one command:
+
+```bash
+ddgr-skill lookup "your query"
+```
+
+Options:
+- `--num N` -- Number of results to search and fetch (default 3)
+- `--format markdown|json` -- Output format (default: markdown)
+- `--output DIR` -- Save each result as a separate file in a directory
+- `--time SPAN` -- Time filter: `d`, `w`, `m`, `y`
+- `--site SITE` -- Restrict search to a specific site
+
+When `--output` is a directory, each result is saved as `<index>_<safe_filename>.md` or `.json`.
 
 ### Search
 
-Search DuckDuckGo and return results as JSON:
+Search DuckDuckGo and return results as JSON (titles, URLs, abstracts only):
 
 ```bash
 ddgr-skill search "your query" --num 5
 ```
+
+Use `search` only when you need a broad scan of titles/URLs without fetching full
+page content. Adding `--fetch` turns it into a lookup operation.
 
 Options:
 - `--num N` -- Number of results (1-25, default 10)
@@ -26,12 +60,13 @@ Options:
 - `--site SITE` -- Restrict search to a specific site
 - `--region REG` -- Region code (e.g., `wt-wt` for worldwide)
 - `--expand` -- Expand abbreviated URLs to full form
+- `--fetch` -- Also fetch each result and include full page content (turns into lookup)
 
 Output is a JSON array to stdout with objects containing `title`, `url`, and `abstract`.
 
 ### Fetch
 
-Fetch a single URL and convert to readable markdown:
+Fetch a single URL and convert HTML to readable markdown:
 
 ```bash
 ddgr-skill fetch "https://example.com/page"
@@ -42,40 +77,31 @@ Options:
 - `--output FILE` -- Save output to a file instead of stdout
 - `--title` -- Include page title and source in markdown output
 
-### Lookup
-
-Search and fetch the top results in one command:
-
-```bash
-ddgr-skill lookup "your query" --num 3
-```
-
-Options:
-- `--num N` -- Number of results to search and fetch (default 3)
-- `--format markdown|json` -- Output format (default: markdown with separators)
-- `--output DIR` -- Save each result as a separate file in a directory
-- `--time SPAN` -- Time filter: `d`, `w`, `m`, `y`
-- `--site SITE` -- Restrict search to a specific site
-
-When `--output` is a directory, each result is saved as `<index>_<safe_filename>.md` or `.json`.
-
 ## Workflow Examples
 
-**Research a topic:**
+**Answer a question (default):**
 ```bash
-ddgr-skill search "Python async programming" --num 5
-ddgr-skill fetch "https://docs.python.org/3/library/asyncio.html" --title
-ddgr-skill lookup "latest Python release notes" --num 3 --output ./research
+ddgr-skill lookup "what is the weather in Zurich today?"
 ```
 
-**Quick fact-check:**
+**Research a topic with saved results:**
+```bash
+ddgr-skill lookup "Python async programming" --num 5 --output ./research
+```
+
+**Quick fact-check as JSON:**
 ```bash
 ddgr-skill lookup "event loop implementation" --num 2 --format json
 ```
 
 **Site-specific research:**
 ```bash
-ddgr-skill search "pytest fixtures" --site docs.pytest.org --num 5
+ddgr-skill lookup "pytest fixtures" --site docs.pytest.org --num 3
+```
+
+**Browse titles without fetching (rare):**
+```bash
+ddgr-skill search "Python async programming" --num 10
 ```
 
 ## Error Handling

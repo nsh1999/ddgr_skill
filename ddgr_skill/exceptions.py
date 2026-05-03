@@ -29,3 +29,14 @@ class NetworkError(FetchError):
 class HTTPError(FetchError):
     """Non-200 HTTP response."""
     pass
+
+
+class ContentQualityError(FetchError):
+    """Fetched content failed quality validation."""
+    pass
+
+
+class NoResultsError(DdgRSkillError):
+    """No usable results could be obtained."""
+    pass
+
