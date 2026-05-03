@@ -14,11 +14,25 @@ from ddgr_skill.exceptions import ContentQualityError, HTTPError, NetworkError
 logger = logging.getLogger(__name__)
 
 _DEFAULT_TIMEOUT = 10.0
-_DEFAULT_USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/120.0.0.0 Safari/537.36"
-)
+_DEFAULT_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.google.com/",
+    "sec-ch-ua": '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "Upgrade-Insecure-Requests": "1",
+    "Connection": "keep-alive",
+}
 _TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
 _STRIP_TAGS = ["nav", "header", "footer", "aside"]
 _MIN_CONTENT_LENGTH = 150
@@ -35,13 +49,18 @@ _MAX_RETRIES = 2
 _RETRY_DELAYS = [0.5, 1.0]
 
 
-def fetch_url(url, timeout=_DEFAULT_TIMEOUT, user_agent=_DEFAULT_USER_AGENT):
+def fetch_url(url, timeout=_DEFAULT_TIMEOUT, headers=_DEFAULT_HEADERS):
     """Fetch a URL and return the response."""
     try:
-        response = httpx.get(
-            url, timeout=timeout, follow_redirects=True,
-            headers={"User-Agent": user_agent}
-        )
+        # Use a client to enable HTTP/2 support
+        with httpx.Client(http2=True) as client:
+            response = client.get(
+                url, timeout=timeout, follow_redirects=True,
+                headers=headers
+            )
+            # Copy the response content so it's available outside the client context
+            response.read()
+            return response
     except httpx.TimeoutException as exc:
         raise NetworkError(
             f"Timeout fetching {url} after {timeout}s"
@@ -140,15 +159,15 @@ def fetch_as_markdown(url, timeout=_DEFAULT_TIMEOUT):
     return {"title": title, "url": url, "content": content}
 
 
-async def _fetch_single_url_async(url, timeout, user_agent):
+async def _fetch_single_url_async(url, timeout, headers):
     """Fetch a single URL asynchronously."""
     try:
         logger.debug(f"Requesting URL: {url}")
         async with httpx.AsyncClient(
-            timeout=timeout, follow_redirects=True
+            timeout=timeout, follow_redirects=True, http2=True
         ) as client:
             response = await client.get(
-                url, headers={"User-Agent": user_agent}
+                url, headers=headers
             )
             logger.debug(f"Response received for {url}: {response.status_code}")
             response.raise_for_status()
@@ -182,7 +201,7 @@ def _is_retriable_error(exc):
 
 
 async def _fetch_single_url_with_retry(
-    url, timeout, user_agent, max_retries=_MAX_RETRIES
+    url, timeout, headers, max_retries=_MAX_RETRIES
 ):
     """Fetch a single URL with retry and content validation.
 
@@ -194,7 +213,7 @@ async def _fetch_single_url_with_retry(
         On failure: includes title, url, error.
     """
     for attempt in range(max_retries + 1):
-        result = await _fetch_single_url_async(url, timeout, user_agent)
+        result = await _fetch_single_url_async(url, timeout, headers)
 
         if "error" in result:
             err_msg = result["error"]
@@ -234,7 +253,7 @@ def fetch_urls_concurrent(urls, timeout=_DEFAULT_TIMEOUT):
     """Fetch multiple URLs concurrently."""
     async def _run():
         tasks = [
-            _fetch_single_url_async(url, timeout, _DEFAULT_USER_AGENT)
+            _fetch_single_url_async(url, timeout, _DEFAULT_HEADERS)
             for url in urls
         ]
         return await asyncio.gather(*tasks)
@@ -284,7 +303,7 @@ def fetch_with_fallback(
 
             tasks = [
                 _fetch_single_url_with_retry(
-                    url, timeout, _DEFAULT_USER_AGENT
+                    url, timeout, _DEFAULT_HEADERS
                 )
                 for url in batch_urls
             ]
