@@ -13,6 +13,19 @@ The authors are not responsible for any misuse of this software, including but n
 
 Users are responsible for ensuring their usage complies with DuckDuckGo's terms of service and all applicable laws and regulations.
 
+## ⚠️ Limitations
+
+### Bot Protection & Cloudflare
+`ddgr-skill` is designed as a lightweight CLI tool using static HTTP clients. Consequently, it cannot bypass advanced bot protection mechanisms (such as Cloudflare's "Under Attack" mode) used by some websites (e.g., `timeanddate.com`).
+
+These sites require:
+- **JavaScript Execution:** To solve browser challenges.
+- **Cookie Handling:** Support for complex challenge-response cookie flows.
+- **TLS Fingerprinting:** Evasion of detection patterns used by libraries like `httpx` or `requests`.
+
+To support these sites, a headless browser (e.g., Playwright or Selenium) would be required. To keep the tool lightweight and minimize dependencies, this has not been implemented. The tool continues to work reliably for the vast majority of sites using standard header checks.
+
+
 ## Prerequisites
 
 - **Python 3.12+**
