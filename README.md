@@ -58,10 +58,10 @@ cp skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
 
 ### Lookup (default - search + fetch)
 
-The `lookup` command searches DuckDuckGo and fetches full page content as markdown:
+The `lookup` command searches DuckDuckGo and fetches full page content as markdown. It will return exactly the first $N$ successfully fetched results, automatically skipping and ignoring any URLs that return errors (e.g., 403 Forbidden or 404 Not Found).
 
 ```bash
-uv run ddgr-skill lookup "what is the weather in Zurich today?"
+uv run ddgr-skill lookup "what is the weather in Zurich today?" --num 3
 ```
 
 ### Search with Fetch

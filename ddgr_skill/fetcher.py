@@ -315,7 +315,7 @@ def fetch_with_fallback(
                 else:
                     good_results.append(result)
 
-        all_results = good_results + error_results
+        all_results = good_results
         all_failed = (
             len(good_results) == 0 and len(error_results) > 0
         )
