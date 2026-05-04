@@ -4,7 +4,7 @@ CLI tool for web search via [ddgr](https://github.com/jremix/ddgr) and page cont
 
 ## Why did I create this?
 
-- This is part of my experiment with Hermes-Agent
+- This is part of my experiment with [Hermes-Agent](https://hermes-agent.org/)
 - [DuckDuckGo](https://duckduckgo.com/) provides a way to search the web while providing: Protection. Privacy. Peace of mind.
 - I wanted to show how easy it would be to create this skill using Claude Code, Ollama and a local LLM.
 - This is all about curiosity and the wish to experiment.
