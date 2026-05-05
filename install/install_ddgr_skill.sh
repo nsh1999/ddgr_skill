@@ -1,11 +1,28 @@
 #!/usr/bin/env bash
-# Install ddgr-skill as a Claude Code skill
+# Install ddgr-skill as a Claude Code or Hermes skill
 set -euo pipefail
 
-SKILL_DIR="$HOME/.claude/skills/ddgr-skill"
+# Default target
+TARGET="claude"
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --target)
+            TARGET="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: $0 [--target claude|hermes|all]"
+            exit 1
+            ;;
+    esac
+done
+
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-echo "Installing ddgr-skill..."
+echo "Installing ddgr-skill for target: $TARGET..."
 
 # Check ddgr is installed
 if ! command -v ddgr &>/dev/null; then
@@ -25,22 +42,48 @@ cd "$REPO_DIR"
 uv sync
 uv pip install -e .
 
-# Create wrapper script in ~/.local/bin/ (typically in PATH)
+# Create wrapper script in ~/.local/bin/ (shared by both agents)
 mkdir -p "$HOME/.local/bin"
-cat > "$HOME/.local/bin/ddgr-skill" << EOF
+cat > "$HOME/.local/bin/ddgr-skill" <<< EOF EOF
 #!/bin/bash
 exec "$REPO_DIR/.venv/bin/python" -m ddgr_skill "\$@"
 EOF
 chmod +x "$HOME/.local/bin/ddgr-skill"
 
-# Install skill definition
-mkdir -p "$SKILL_DIR"
-cp "$REPO_DIR/skills/ddgr-skill/SKILL.md" "$SKILL_DIR/"
+# Define target paths
+CLAUDE_SKILL_DIR="$HOME/.claude/skills/ddgr-skill"
+HERMES_SKILL_DIR="$HOME/.hermes/skills/web/ddgr-skill"
+
+install_skill() {
+    local dir="$1"
+    local name="$2"
+    echo "Installing skill definition to $dir..."
+    mkdir -p "$dir"
+    cp "$REPO_DIR/skills/ddgr-skill/SKILL.md" "$dir/"
+    echo "✅ Installed for $name: $dir/SKILL.md"
+}
+
+# Perform installation based on target
+case $TARGET in
+    claude)
+        install_skill "$CLAUDE_SKILL_DIR" "Claude Code"
+        ;;
+    hermes)
+        install_skill "$HERMES_SKILL_DIR" "Hermes"
+        ;;
+    all)
+        install_skill "$CLAUDE_SKILL_DIR" "Claude Code"
+        install_skill "$HERMES_SKILL_DIR" "Hermes"
+        ;;
+    *)
+        echo "ERROR: Invalid target '$TARGET'. Supported targets: claude, hermes, all."
+        exit 1
+        ;;
+esac
 
 echo ""
 echo "ddgr-skill installed successfully!"
-echo "  Skill: $SKILL_DIR/SKILL.md"
-echo "  CLI:   ddgr-skill search 'your query' --fetch"
-echo "  Run:   ddgr-skill lookup 'your query'"
+echo "CLI:   ddgr-skill search 'your query' --fetch"
+echo "Run:   ddgr-skill lookup 'your query'"
 echo ""
-echo "Restart Claude Code to activate the skill."
+echo "Restart your agent session to activate the skill."
