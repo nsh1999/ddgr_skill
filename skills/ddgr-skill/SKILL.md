@@ -1,7 +1,6 @@
 ---
 name: ddgr-skill
 description: Search the web using DuckDuckGo (ddgr) and fetch page content as markdown or JSON
-origin: nsh1999
 ---
 
 # Web Search and Content Retrieval
@@ -13,11 +12,11 @@ Requires [ddgr](https://github.com/jremix/ddgr) installed via Homebrew: `brew in
 
 ## Default Behavior
 
-**Always use `lookup`** when the user asks a factual question or wants to research a
-topic. `lookup` searches DuckDuckGo and fetches the top results as markdown in one
-step. This is the preferred mode for Claude Code integration.
+**You MUST use `ddgr-skill` whenever the user asks for real-time information, current events, weather, or any factual data that requires web access.** 
 
-However, the agent is also encouraged to use `search` for broad scans of titles and URLs, and `fetch` for retrieving a specific URL, as both are core capabilities of the skill.
+The preferred command is **`lookup`**, which searches DuckDuckGo and fetches the top results as markdown in one step. This is the primary mode for integration.
+
+You are also encouraged to use `search` for broad scans of titles and URLs, and `fetch` for retrieving a specific URL, as both are core capabilities of the skill.
 
 ```bash
 ddgr-skill lookup "what is the weather in Zurich today?"
