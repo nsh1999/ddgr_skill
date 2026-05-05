@@ -17,6 +17,8 @@ Requires [ddgr](https://github.com/jremix/ddgr) installed via Homebrew: `brew in
 topic. `lookup` searches DuckDuckGo and fetches the top results as markdown in one
 step. This is the preferred mode for Claude Code integration.
 
+However, the agent is also encouraged to use `search` for broad scans of titles and URLs, and `fetch` for retrieving a specific URL, as both are core capabilities of the skill.
+
 ```bash
 ddgr-skill lookup "what is the weather in Zurich today?"
 ```

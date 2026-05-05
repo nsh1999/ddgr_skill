@@ -61,6 +61,18 @@ mkdir -p ~/.claude/skills/ddgr-skill
 cp skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
 ```
 
+### 🚀 Hermes Installation
+If you are using this skill with [Hermes-Agent](https://hermes-agent.org/), follow these steps:
+1. **Install Prerequisites**: Ensure `ddgr` and `uv` are installed on your host machine.
+2. **Quick Install**:
+   ```bash
+   git clone https://github.com/nsh1999/ddgr_skill.git
+   cd ddgr_skill
+   bash install/install_ddgr_skill.sh
+   ```
+3. **Verification**: Ensure the skill definition is present at `~/.claude/skills/ddgr-skill/SKILL.md`.
+4. **Restart**: Restart your Hermes/Claude session to activate the search capabilities.
+
 ## Usage
 
 ### Lookup (default - search + fetch)
