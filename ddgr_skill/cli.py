@@ -2,12 +2,33 @@
 
 import argparse
 import json
-import sys
 import logging
+import shutil
+import sys
 from pathlib import Path
 
 from ddgr_skill.exceptions import DdgRSkillError
 from ddgr_skill.search import search
+
+
+_SKILL_INSTALL_TARGETS = [
+    (Path.home() / ".claude/skills/ddgr-skill/SKILL.md", "claude_skill.md"),
+    (Path.home() / ".hermes/skills/web/ddgr-skill/SKILL.md", "hermes_skill.md"),
+]
+
+
+def _ensure_skills_installed() -> None:
+    """Auto-install SKILL.md to agent skill directories on first run."""
+    package_dir = Path(__file__).parent
+    for target_path, source_name in _SKILL_INSTALL_TARGETS:
+        if target_path.exists():
+            continue
+        source = package_dir / source_name
+        if not source.exists():
+            continue
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target_path)
+        logger.info(f"Installed skill definition to {target_path}")
 
 # Configure logging to stderr
 logging.basicConfig(
@@ -279,6 +300,7 @@ def main(argv: list[str] | None = None) -> int:
     """
     import time
 
+    _ensure_skills_installed()
     parser = build_parser()
     args = parser.parse_args(argv)
 

@@ -48,13 +48,13 @@ No clone needed — `ddgr` must still be installed separately.
 python -m pip install --break-system-packages git+https://github.com/nsh1999/ddgr_skill
 ```
 
-This installs only the Python package (`ddgr-skill`) and its Python dependencies (`beautifulsoup4`, `httpx`, `markdownify`). You still need `ddgr` on your PATH (`brew install ddgr`).
+This installs only the Python package (`ddgr-skill`) and its Python dependencies (`beautifulsoup4`, `httpx`, `markdownify`). You still need `ddgr` on your PATH (`brew install ddgr`). Skill definitions are auto-installed on first `ddgr-skill` run.
 
 > **Note:** `--break-system-packages` is required on systems that enforce [PEP 668](https://peps.python.org/pep-0668/) (e.g. Ubuntu, Debian, many container images). If your Python environment allows it, you may omit this flag. Use `python -m pip` (not bare `pip`) to ensure it installs against the Python version on your PATH — on some systems bare `pip` points to an older system Python. If `python` is <3.12, substitute `python3.12` or `python3.13`.
 
 ### Option 2: Install Script (with skill setup)
 
-The install script handles both the Python package and the skill definition copy in one step.
+The install script handles the Python package, wrapper script, and skill definition copy in one step. SKILL.md files are also auto-installed on first `ddgr-skill` run, so the script is primarily for the wrapper script setup.
 
 ```bash
 git clone https://github.com/nsh1999/ddgr_skill.git
@@ -66,24 +66,19 @@ bash install/install_ddgr_skill.sh
 
 | Flag | Choices | Default | Description |
 |------|---------|---------|-------------|
-| `--target` | `claude`, `hermes`, `all` | `hermes` | Where to copy the skill definition |
 | `--install-method` | `uv`, `pip` | `uv` | How to install the Python package |
 
 **Examples:**
 
 ```bash
-# Install for Claude Code using pip instead of uv
-bash install/install_ddgr_skill.sh --target claude --install-method pip
-
-# Install for both agents with uv (default method)
-bash install/install_ddgr_skill.sh --target all
+# Install with pip instead of uv
+bash install/install_ddgr_skill.sh --install-method pip
 ```
 
 The script:
 1. Checks for `ddgr` and `uv`/`pip` prerequisites
 2. Installs the Python package (editable mode)
 3. Creates a wrapper script at `~/.local/bin/ddgr-skill`
-4. Copies `SKILL.md` to the target agent's skill directory
 
 ### Manual Install
 
@@ -91,9 +86,9 @@ The script:
 git clone https://github.com/nsh1999/ddgr_skill.git
 cd ddgr_skill
 python -m pip install --break-system-packages .
-mkdir -p ~/.claude/skills/ddgr-skill
-cp skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
 ```
+
+SKILL.md files are auto-installed on first `ddgr-skill` run.
 
 ## Usage
 

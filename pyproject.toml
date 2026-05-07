@@ -33,6 +33,9 @@ Repository = "https://github.com/nsh1999/ddgr_skill"
 [tool.setuptools.packages.find]
 include = ["ddgr_skill*"]
 
+[tool.setuptools.package-data]
+ddgr_skill = ["*.md"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_classes = "Test*"
