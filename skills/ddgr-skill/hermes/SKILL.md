@@ -10,7 +10,7 @@ metadata:
     tags: [web, search, research]
     related_skills: []
     requires_toolsets: [web]
-    requires_tools: [web_search]
+    requires_tools: []
     fallback_for_toolsets: [browser]
     fallback_for_tools: [browser_navigate]
 ---
