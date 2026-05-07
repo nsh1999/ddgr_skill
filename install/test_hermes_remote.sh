@@ -7,7 +7,7 @@ HERMES_HOST="titan"
 
 echo "🧪 Testing ddgr-skill on $HERMES_HOST..."
 
-ssh $HERMES_USER@$HERMES_HOST <<<EOFEOF
+ssh $HERMES_USER@$HERMES_HOST <<EOF
     set -euo pipefail
 
     echo "Checking CLI..."

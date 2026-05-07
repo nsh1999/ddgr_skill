@@ -36,12 +36,23 @@ To support these sites, a headless browser (e.g., Playwright or Selenium) would 
 ## Prerequisites
 
 - **Python 3.12+**
-- **[uv](https://astral.sh/uv)** - Python package manager
 - **[ddgr](https://github.com/jremix/ddgr)** - Install via `brew install ddgr`
 
 ## Installation
 
-### Quick Install (Claude Code)
+### Option 1: pip (fastest)
+
+No clone needed — `ddgr` must still be installed separately.
+
+```bash
+pip install git+https://github.com/nsh1999/ddgr_skill
+```
+
+This installs the Python package and its dependencies. You still need `ddgr` on your PATH (`brew install ddgr`).
+
+### Option 2: Install Script (with skill setup)
+
+The install script handles both the Python package and the skill definition copy in one step.
 
 ```bash
 git clone https://github.com/nsh1999/ddgr_skill.git
@@ -49,29 +60,38 @@ cd ddgr_skill
 bash install/install_ddgr_skill.sh
 ```
 
-This installs dependencies, sets up the CLI, and copies the skill definition to `~/.claude/skills/ddgr-skill/`. Restart Claude Code to activate.
+**Script options:**
+
+| Flag | Choices | Default | Description |
+|------|---------|---------|-------------|
+| `--target` | `claude`, `hermes`, `all` | `hermes` | Where to copy the skill definition |
+| `--install-method` | `uv`, `pip` | `uv` | How to install the Python package |
+
+**Examples:**
+
+```bash
+# Install for Claude Code using pip instead of uv
+bash install/install_ddgr_skill.sh --target claude --install-method pip
+
+# Install for both agents with uv (default method)
+bash install/install_ddgr_skill.sh --target all
+```
+
+The script:
+1. Checks for `ddgr` and `uv`/`pip` prerequisites
+2. Installs the Python package (editable mode)
+3. Creates a wrapper script at `~/.local/bin/ddgr-skill`
+4. Copies `SKILL.md` to the target agent's skill directory
 
 ### Manual Install
 
 ```bash
 git clone https://github.com/nsh1999/ddgr_skill.git
 cd ddgr_skill
-uv sync
+pip install .
 mkdir -p ~/.claude/skills/ddgr-skill
 cp skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
 ```
-
-### 🚀 Hermes Installation
-If you are using this skill with [Hermes-Agent](https://hermes-agent.org/), follow these steps:
-1. **Install Prerequisites**: Ensure `ddgr` and `uv` are installed on your host machine.
-2. **Quick Install**:
-   ```bash
-   git clone https://github.com/nsh1999/ddgr_skill.git
-   cd ddgr_skill
-   bash install/install_ddgr_skill.sh
-   ```
-3. **Verification**: Ensure the skill definition is present at `~/.claude/skills/ddgr-skill/SKILL.md`.
-4. **Restart**: Restart your Hermes/Claude session to activate the search capabilities.
 
 ## Usage
 
