@@ -45,10 +45,12 @@ To support these sites, a headless browser (e.g., Playwright or Selenium) would 
 No clone needed — `ddgr` must still be installed separately.
 
 ```bash
-pip install git+https://github.com/nsh1999/ddgr_skill
+pip install --break-system-packages git+https://github.com/nsh1999/ddgr_skill
 ```
 
-This installs the Python package and its dependencies. You still need `ddgr` on your PATH (`brew install ddgr`).
+This installs only the Python package (`ddgr-skill`) and its Python dependencies (`beautifulsoup4`, `httpx`, `markdownify`). You still need `ddgr` on your PATH (`brew install ddgr`).
+
+> **Note:** `--break-system-packages` is required on systems that enforce [PEP 668](https://peps.python.org/pep-0668/) (e.g. Ubuntu, Debian, many container images). If your Python environment allows it, you may omit this flag.
 
 ### Option 2: Install Script (with skill setup)
 
@@ -88,7 +90,7 @@ The script:
 ```bash
 git clone https://github.com/nsh1999/ddgr_skill.git
 cd ddgr_skill
-pip install .
+pip install --break-system-packages .
 mkdir -p ~/.claude/skills/ddgr-skill
 cp skills/ddgr-skill/SKILL.md ~/.claude/skills/ddgr-skill/
 ```

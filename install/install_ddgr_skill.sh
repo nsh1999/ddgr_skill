@@ -51,7 +51,7 @@ if [ "$INSTALL_METHOD" = "uv" ]; then
     uv sync
     uv pip install -e .
 else
-    pip install -e .
+    pip install --break-system-packages -e .
 fi
 
 # Create wrapper script in ~/.local/bin/ (shared by both agents)
